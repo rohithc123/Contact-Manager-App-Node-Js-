@@ -1,11 +1,13 @@
 //usually for async we need to use try catch block, to cut short the code we will be using express asysnc handler cause it will handle all those messy stuff
 const asyncHandler = require("express-async-handler");
+const Contact = require("../models/contact-model")
 
 //used to get all contacts
 // route GET /api/contacts
 // access public as of now
 const getAllContact = asyncHandler(async (req,res) =>{
-    res.status(200).json({message:"Get all contacts"});
+    const contacts = await Contact.find();
+    res.status(200).json({contacts});
 });
 
 //create new contacts
@@ -23,7 +25,13 @@ const createContact = asyncHandler(async (req,res) =>{
         throw new Error("All fields are required");
     }
 
-    res.status(201).json({message:"Create contacts"});
+    const contact = await Contact.create({
+        name,
+        email,
+        phone
+    });
+
+    res.status(201).json({contact});
 });
 
 
@@ -32,7 +40,15 @@ const createContact = asyncHandler(async (req,res) =>{
 // route get /api/contacts
 // access public as of now
 const getContact = asyncHandler(async (req,res) =>{
-    res.status(200).json({message:`Get contact for ${req.params.id}`});
+    const contact = await Contact.findById(req.params.id);
+
+    if(!contact){
+        res.status(404);
+        throw new Error("Contact not found");
+    }
+
+    res.status(200).json(contact);
+
 });
 
 
