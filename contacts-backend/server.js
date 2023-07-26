@@ -11,6 +11,8 @@ const port = process.env.PORT || 5000;
 
 //getting the above required info from another file
 
+//the below line is used to parse the data that is being sent
+app.use(express.json());
 app.use("/api/contacts", require("./routes/contact-routes"));
 
 
